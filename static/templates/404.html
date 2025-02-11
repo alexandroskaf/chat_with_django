@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% load auth_extras %}
+
+
+{% block page_content %}
+
+{% block content %}
+<div class="text-center">
+    <div class="error mx-auto" data-text="404">404</div>
+    <p class="lead text-gray-800 mb-5">Η σελίδα δεν βρέθηκε!</p>
+    <p class="text-gray-500 mb-0">Αυτό που ψάχνετε δεν υπάρχει πλέον.</p>
+    <a href="{% url 'home' %}">← Πίσω στην Αρχική</a>
+</div>
+
+{% endblock %}
+
+{% endblock %}

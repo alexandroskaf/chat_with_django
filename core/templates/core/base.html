@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{% block title %}{% endblock %} Helpdesk</title>
+        {% load static %}
+
+        <style>
+            /* Global Styles */
+            body {
+                font-family: 'Arial', sans-serif;
+                background-color: #456e91; /* bg-teal-600 */
+                margin: 0;
+                padding: 0;
+                color: white;
+                /* {% comment %} overflow-y: hidden; {% endcomment %} */
+
+
+            }
+
+            h1, h2, h3, h4, h5, h6 {
+                margin: 0;
+            }
+
+            a {
+                text-decoration: none;
+                color: inherit;
+            }
+
+            /* Navbar Styles */
+            nav {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 16px 32px;
+                background-color: #456e91; /* bg-teal-800 */
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                border-radius: 8px; /* Adding rounded corners */
+                margin: 16px;
+            }
+
+            .navbar-logo a {
+                font-size: 2rem; /* text-2xl */
+                font-weight: bold;
+                color: white;
+                transition: color 0.3s ease;
+            }
+
+            .navbar-logo a:hover {
+                color: #E2E8F0; /* hover:text-gray-200 */
+            }
+
+            .navbar-menu {
+                display: flex;
+                gap: 1.5rem; /* space-x-6 */
+                align-items: center;
+            }
+
+            .navbar-menu a {
+                color: white;
+                font-size: 1rem;
+                font-weight: 500;
+                padding: 8px 16px; /* Adding rectangular padding */
+                border-radius: 8px; /* Rounded buttons */
+                transition: background-color 0.3s ease;
+            }
+
+            .navbar-menu a:hover {
+                background-color: #456e91; /* hover:bg-teal-700 */
+            }
+
+            .auth-buttons a {
+                padding: 12px 24px; /* px-5 py-3 */
+                background-color: #456e91; /* bg-teal-600 */
+                border-radius: 16px; /* rounded-xl */
+                color: white;
+                font-weight: 600;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Adding shadow */
+                transition: background-color 0.3s ease, transform 0.3s ease;
+            }
+
+            .auth-buttons a:hover {
+                background-color: #fff; /* hover:bg-teal-700 */
+                transform: translateY(-2px);
+            }
+
+            /* Content Block */
+            .content {
+                padding: 2rem 1rem; /* py-6 px-4 */
+                margin: 16px;
+                background-color: #fff;
+                color: #333;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+
+            /* Messages Box */
+            .messages {
+                height: 400px;
+                overflow-y: auto;
+                background-color: #F7FAFC; /* Light background for messages */
+                color: #333;
+                padding: 1rem;
+                border-radius: 8px; /* Rounded corners */
+                border: 1px solid #E2E8F0;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                margin-top: 16px;
+            }
+
+            /* Form and Input Elements (Rectangular style) */
+            .input-field {
+                padding: 12px 16px;
+                width: 100%;
+                border-radius: 8px;
+                border: 1px solid #E2E8F0;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                margin-bottom: 16px;
+            }
+
+            /* Button Styling */
+            .button {
+                padding: 12px 24px;
+                background-color: #456e91; /* bg-teal-600 */
+                color: white;
+                font-weight: bold;
+                border-radius: 8px;
+                text-align: center;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+
+            .button:hover {
+                background-color: #456e91; /* hover:bg-teal-700 */
+            }
+
+            /* Responsive Styles */
+            @media (max-width: 768px) {
+                nav {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    padding: 16px;
+                    margin: 8px;
+                }
+
+                .navbar-menu {
+                    flex-direction: column;
+                    gap: 1rem;
+                    margin-top: 16px;
+                }
+
+                .content {
+                    margin: 8px;
+                    padding: 16px;
+                }
+
+                .messages {
+                    margin-top: 16px;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <!-- Navbar -->
+        <nav>
+            <div class="navbar-logo">
+                <a href="/"><img src="/static/db_logo.png">Helpdesk </a>
+            </div>
+
+            <div class="navbar-menu">
+                {% if request.user.is_authenticated %}
+                    {% comment %} <a href="/rooms/">Συνομιλίες</a> {% endcomment %}
+                    <a href="/rooms/rooms/create">Δημιουργία Νέας Συνομιλίας</a>
+                    <a href="{% url 'rooms' %}">Συνομιλίες</a>
+                    <div class="auth-buttons">
+                        <a href="/logout/">Αποσύνδεση</a>
+                    </div>
+                {% else %}
+                    <a href="/login/">Είσοδος</a>
+                    <div class="auth-buttons">
+                       
+                    </div>
+                {% endif %}
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="content">
+            {% block content %}
+            <div class="messages">
+                <!-- Example message content -->
+                <p>User: Hello! How can I assist you today?</p>
+                <p>Support: Hi! I'm having an issue with my account.</p>
+            </div>
+            {% endblock %}
+        </div>
+
+        <!-- Scripts -->
+        {% block scripts %}
+        {% endblock %}
+    </body>
+</html>

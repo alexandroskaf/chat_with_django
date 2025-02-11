@@ -1,0 +1,367 @@
+{% load static %}
+{% load auth_extras %}
+{% load dict_extras %}
+
+<!DOCTYPE html>
+<html lang="el">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <!-- Site Properties -->
+    <title> ΚΔΕΣ - "Ζεύξις" </title>
+    {% comment %} <link rel="icon" type="image/png" href="{% static 'dides_helpdesk/assets/db_logo.png' %}"> {% endcomment %}
+    <link rel="icon" type="image/png" href="{% static 'dides_helpdesk/assets/favicon.ico' %}">
+
+    <link href="{% static 'dides_helpdesk/vendor/fontawesome-free/css/all.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'dides_helpdesk/vendor/tempusdominus/css/tempusdominus-bootstrap-4.min.css' %}"
+        rel=" stylesheet" />
+    <link href="{% static 'dides_helpdesk/vendor/bootstrap-select/css/bootstrap-select.min.css' %}" rel=" stylesheet" />
+    <link href="{% static 'dides_helpdesk/css/sb-admin-2.css'%}" rel="stylesheet" />
+    <link href="{% static 'dides_helpdesk/css/helpdesk-style.css'%}" rel="stylesheet" />
+
+
+</head>
+
+<body id="page-top" class="sidebar-toggled">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion toggled" id="accordionSidebar">
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'home' %}">
+                <div class="sidebar-brand-icon ">
+                    <i>
+                        <img src="{% static 'dides_helpdesk/assets/db_logo.png' %}" alt="Εμβλημα Διαβιβάσεων"
+                            class="img-fluid" width=80% />
+                    </i>
+                </div>
+                <div class="sidebar-brand-text mx-3"> ΚΔΕΣ - "Ζεύξις" </div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0 ">
+
+            <!-- Nav Item -->
+            {% url 'home' as home %}
+            <li class="nav-item {% ifequal request.path home %}active{% endifequal %}">
+                <a class="nav-link" href="{% url 'home' %}">
+                    <i class="fas fa-fw fa-home"></i>
+                    <span> Αρχική <br> Σελίδα </span>
+                </a>
+            </li>
+
+            <!-- Nav Item -->
+            {% url 'home_new' as home_new %}
+            <li class="nav-item {% ifequal request.path home_new %}active{% endifequal %}">
+                <a class="nav-link" href="{% url 'home_new' %}">
+                    <i class="fas fa-fw fa-home"></i>
+                    <span> Αρχική <br> Σελίδα New </span>
+                </a>
+            </li>
+
+            {% url 'dashboard' as dashboard %}
+            <li class="nav-item {% ifequal request.path dashboard %}active{% endifequal %}">
+                <a class="nav-link" href="{% url 'dashboard' %}">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span> Πίνακας Ελέγχου </span>
+                </a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Sidebar - Brand -->
+            <div class="sidebar-heading">
+                ΒΛΑΒΕΣ
+            </div>
+
+            <!-- Nav Item -->
+            {% url 'new_functional_state' as new_functional_state %}
+            <li class="nav-item {% ifequal request.path new_functional_state %}active{% endifequal %}">
+                <a class="nav-link" href="{% url 'new_functional_state' %}">
+                    <i class="fas fa-fw fa-file-signature"></i>
+                    <span> Καταχώρηση Βλάβης </span>
+                </a>
+            </li>
+
+            <!-- Nav Item -->
+            {% url 'failure_new' as failure_new %}
+            <li class="nav-item {% ifequal request.path failure_new %}active{% endifequal %}">
+                <a class="nav-link" href="{% url 'failure_new' %}">
+                    <i class="fas fa-fw fa-file-signature"></i>
+                    <span> Καταχώρηση Βλάβης New </span>
+                </a>
+            </li>
+
+            <!-- Nav Item -->
+            {% url 'functional_state' as functional_state %}
+            <li class="nav-item {% ifequal request.path functional_state %}active{% endifequal %}">
+                <a class="nav-link" href="{% url 'functional_state' %}">
+                    <i class="fas fa-fw fa-tasks"></i>
+                    <span> Κατάσταση Λειτουργικότητας </span>
+                </a>
+            </li>
+
+            <!-- Nav Item -->
+            {% url 'functional_state' as functional_state %}
+            <li class="nav-item {% ifequal request.path failures %}active{% endifequal %}">
+                <a class="nav-link" href="{% url 'failures_all' %}">
+                    <i class="fas fa-fw fa-tasks"></i>
+                    <span> Πίνακας Βλαβών </span>
+                </a>
+            </li>            
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-2 ">
+
+            <div class="sidebar-heading">
+                ΑΝΑΦΟΡΕΣ
+            </div>
+
+            <!-- Nav Item -->
+            {% url 'new_report' as new_report %}
+            <li class="nav-item {% ifequal request.path new_report %}active{% endifequal %}">
+                <a class="nav-link" href="{% url 'new_report' %}">
+                    <i class="fas fa-fw fa-file-medical"></i>
+                    <span> Δημιουργία Αναφοράς </span>
+                </a>
+            </li>
+
+            <!-- Nav Item -->
+            {% url 'reports_table' as reports_table %}
+            <li class="nav-item {% ifequal request.path reports_table %}active{% endifequal %}">
+                <a class="nav-link" href="{% url 'reports_table' %}">
+                    <i class="fas fa-fw fa-clipboard-list"></i>
+                    <span> Πίνακας Αναφορών </span>
+                </a>
+            </li>
+
+
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <!-- Nav Item -->
+            <li class="nav-item">
+                <a class="nav-link" href="{% static 'dides_helpdesk/documents/helpdesk_manual.pdf' %}">
+                    <i class="fas fa-fw fa-file-pdf"></i>
+                    <span> Οδηγίες Χρήσης </span>
+                </a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+
+        </ul>
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <!-- Topbar Search -->
+                    <form method='GET' action="{% url 'reports_table' %}"
+                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                        <div class="input-group uppercase-input">
+                            <input type="text" name="description__icontains" id="id_description__icontains"
+                                class="form-control bg-light border-0 small" placeholder="Αναζήτηση για.."
+                                aria-label="Search" aria-describedby="basic-addon2" required>
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type='submit'>
+                                    <i class="fas fa-search fa-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+                        {% comment %}
+                        <!-- Nav Item - Alerts -->
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-bell fa-fw"></i>
+                                <!-- Counter - Alerts -->
+                                <span class="badge badge-danger badge-counter">3+</span>
+                            </a>
+
+                            <!-- Dropdown - Alerts -->
+                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="alertsDropdown">
+                                <h6 class="dropdown-header">
+                                    Ειδοποιήσεις
+                                </h6>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-primary">
+                                            <i class="fas fa-file-alt text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">December 12, 2019</div>
+                                        <span class="font-weight-bold">A new monthly report is ready to
+                                            download!</span>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-success">
+                                            <i class="fas fa-donate text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">December 7, 2019</div>
+                                        $290.29 has been deposited into your account!
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-warning">
+                                            <i class="fas fa-exclamation-triangle text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">December 2, 2019</div>
+                                        Spending Alert: We've noticed unusually high spending for your account.
+                                    </div>
+                                </a>
+                            </div>
+                        </li> {% endcomment %}
+
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 de-none d-lg-inline text-gray-600 small">{{ user.first_name }}
+                                    {{ user.last_name }} </span>
+                                {% if request.user|in_group:"admins" %}
+                                <i class="fas fa-user-cog"></i>
+                                {% elif request.user|in_group:"managers" %}
+                                <i class="fas fa-user-tie fa-lg "></i>
+                                {% else %}
+                                <i class="fas fa-user"></i>
+                                {% endif %}
+                            </a>
+
+                            <!-- Dropdown - User Information -->
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="{% url 'user_profile' %}">
+                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Το Προφίλ μου
+                                </a>
+                                {% if request.user|in_group:"admins" or request.user|in_group:"superusers" %}
+                                <a class="dropdown-item" href="/admin/"
+                                    data-tooltip='Μετάβαση στη Διαχειριστική διεπαφή'>
+                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Διαχείριση
+                                </a>
+                                {% endif %}
+                                {% comment %} <a class="dropdown-item" href="#">
+                                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Activity Log
+                                </a> {% endcomment %}
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{% url 'logout' %}">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Αποσύνδεση
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+
+                </nav>
+                <!-- End of Topbar -->
+
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    <!-- Begin of Messages -->
+                    {% include 'messages.html' %}
+                    <!-- End Messages -->
+
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        {% block title %} {% endblock %}
+                    </div>
+
+                    <div class="container-fluid">
+                        <!-- Main Content -->
+                        {% block content %} {% endblock %}
+                    </div>
+
+                </div>
+                <!-- End Page Content -->
+
+            </div>
+            <!-- End of Main Content -->
+
+
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span style="padding-right: 5px;"> release v0.4.8 - Copyright &copy; ΓΕΣ ΚΕΠΙΚ 2020 </span>
+                        <i>
+                            <img src="{% static 'dides_helpdesk/assets/ges_487_logos.png' %}"
+                                alt="Εμβλήματα 487 ΤΔΒ,  ΓΕΣ" class="img-fluid" width=5% />
+                        </i>
+
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="{% static 'dides_helpdesk/vendor/jquery/jquery.min.js' %}"></script>
+    <script defer src="{% static 'dides_helpdesk/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script defer src="{% static 'dides_helpdesk/vendor/moment/moment.min.js' %}"></script>
+    <script defer src="{% static 'dides_helpdesk/vendor/jquery-easing/jquery.easing.min.js'%}"></script>
+
+    <!-- Core plugin for DatePicker -->
+    <script defer src="{% static 'dides_helpdesk/vendor/tempusdominus/tempusdominus-bootstrap-4.min.js'%}"></script>
+
+    <!-- Core plugin for SelectPicker -->
+    <script defer src="{% static 'dides_helpdesk/vendor/bootstrap-select/js/bootstrap-select.min.js' %}"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script defer src="{% static 'dides_helpdesk/js/sb-admin-2.js'%}"></script>
+    <script defer src="{% static 'dides_helpdesk/js/main.js'%}"></script>
+
+    {% block javascript %}{% endblock %}
+
+</body>
+
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ room.name }} - Chat Room</title>
+</head>
+<body>
+    <h1>{{ room.name }}</h1>
+
+    <div id="messages">
+        <ul>
+            {% for message in messages %}
+            <li>
+                <strong>{{ message.user }}:</strong>
+                {{ message.content }}
+                {% if message.file %}
+                    {% if message.file.url.endswith:".mp4" %}
+                        <video width="320" height="240" controls>
+                            <source src="{{ message.file.url }}" type="video/mp4">
+                        </video>
+                    {% else %}
+                        <a href="{{ message.file.url }}">Download file</a>
+                    {% endif %}
+                {% endif %}
+                <br>
+                <small>{{ message.date_added }}</small>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div id="message-form">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Send</button>
+        </form>
+    </div>
+</body>
+</html>

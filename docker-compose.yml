@@ -1,0 +1,52 @@
+services:
+  web:
+    build: .
+    
+    command: daphne djangochat.asgi:application -b 0.0.0.0 -p 8081
+    volumes:
+      - type: bind
+        source: /home/administrator/dides_helpdesk_docs
+        target: /home/app/web/../app_files/
+      - static_volume:/home/app/web/static
+      - media_volume:/home/app/web/user_files
+    ports:
+      - "8081:8081"
+    environment:
+      - DEBUG=0
+      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 193.9.100.54
+      - REDIS_HOST=redis
+      - DATABASE_NAME=dides_helpdesk.prod
+      - DATABASE_USER=POSTGRES_PROD_DIDES_USER
+      - DATABASE_PASSWORD=POSTGRES_PROD_DIDES_PASSWORD
+      - DATABASE_HOST=db
+    networks:
+      - prod_default
+
+
+    restart: always
+    depends_on:
+      - db
+  redis:
+    image: redis:alpine
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_DB=dides_helpdesk.prod
+      - POSTGRES_USER=POSTGRES_PROD_DIDES_USER
+      - POSTGRES_PASSWORD=POSTGRES_PROD_DIDES_PASSWORD
+    volumes:
+      - type: bind
+        source: C:/Users/yesa/Desktop/share/helpdesk_data.prod
+        target: /var/lib/postgresql/data/
+    env_file:
+      - ./.env.prod.db
+
+  
+volumes:
+  static_volume:
+  media_volume:
+networks:
+  prod_default:
+    external: true

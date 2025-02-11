@@ -1,0 +1,82 @@
+  {% extends 'base.html' %}
+  
+  {% load crispy_forms_tags %}
+
+  {% block page_content %}
+
+  {% block title %}
+
+  <h1 class="h3 mb-0 text-gray-800"> Προσθήκη νέου σχολίου </h1>
+
+  {% endblock %}
+
+  {% block content %}
+
+  <div class="row">
+    <div class="col-xl-8 col-lg-7">
+
+      <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+          <h6 class="m-0 font-weight-bold text-primary"> {{report}} </h6>
+        </div>
+
+        <div class="card-body">
+          <form method='post' action="{% url 'add_comment' report.id %}">
+            {% csrf_token %}
+            {% comment %} {{form|crispy}} {% endcomment %}
+            <div class="form-group uppercase-input">
+              <label class="field-label" for="{{ form.text.name }}"> Νέο σχόλιο: </label>
+
+              {% if form.text.errors %}
+              <span class="field-error">{{ form.text.errors }}</span>
+              {% endif %}
+
+              {{form.text}}
+
+              <div align="right">
+                Από {{user}} στις {{date}}
+              </div>
+
+              {% if form.text.errors %}
+              <span class="field-helptext">{{ form.text.help_text|safe }}</span>
+              {% endif %}
+
+            </div>
+            <br>
+            <button class="btn btn-primary btn-user btn-block" id='submitBtn' type='submit'> Προσθήκη </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comments -->
+    <div class="col-xl-4 col-lg-5 sticky-top">
+      <div class="card shadow mb-4 ">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+          <h6 class="m-0 font-weight-bold text-gray-700"> Ιστορικό </h6>
+        </div>
+
+        <div class="card-body">
+
+          {% for comment in comments %}
+        <div class="card shadow mb-2 border-left-warning">
+          <div class="card-body ">
+            <div class="h6 mb-0 text-gray-800"><b>{{ comment }}</b></div>
+          </div>
+          <div class="card-footer card-footer-comment">
+            <div class="text-xs font-weight-bold text-primary mb-1">
+              {{comment.author}} στις {{ comment.created_date }}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  {% endblock %}
+
+
+  {% endblock %}

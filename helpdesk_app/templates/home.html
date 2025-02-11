@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load auth_extras %}
+{% load dict_extras %}
+{% load progress_bar_extras %}
+
+{% load render_table from django_tables2 %}
+
+{% block page_content %}
+
+{% block title %}
+<h1 class="h3 mb-0 text-gray-800"> Κέντρο Διαχείρισης Επικοινωνιακών Συστημάτων - "Ζεύξις" </h1>
+{% endblock %}
+
+{% block content %}
+
+
+<h1>Βλάβες</h1>
+<div class="row">
+    {% if not request.user|in_group:"users" %}
+    {# New Failures #}
+    <div class="col-xl-3 col-lg-3 col-md-auto mb-3">
+        <a class="home_card" href="{% url 'failures_all'%}?status=NE" style="text-decoration: none;">
+            <div class="home_card card border-left-warning shadow h-100 py-3">
+                <div class="card-body card-body-small">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="h4 font-weight-bold text-warning text-uppercase mb-1">
+                                ΝΕΕΣ </div>
+                        </div>
+                    </div>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2" >
+                            <div style="display: inline-block" class="display-2 mb-0 font-weight-bold text-gray-800" id="new_failures_count">{{new_failures}}
+                            </div>
+                            <i class="fas fa-envelope fa-2x text-gray-500" style="position: absolute; top: 25%; right: 0%;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    {% endif %}
+
+    {# Open Failures #}
+    <div class="col-xl-3 col-lg-3 col-md-auto mb-3">
+        <a href="{% url 'failures_all' %}?status=OP" style="text-decoration: none;">
+            <div class="home_card card border-left-orange shadow h-100 py-3">
+                <div class="card-body card-body-small">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="h4 font-weight-bold text-orange text-uppercase mb-1">
+                                ΕΚΚΡΕΜΕΙΣ </div>
+                        </div>
+                    </div>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2" >
+                            <div style="display: inline-block" class="display-2 mb-0 font-weight-bold text-gray-800" id="open_failures_count">{{open_failures}}
+                            </div>
+                            <i class="fas fa-envelope-open-text fa-2x text-gray-500" style="position: absolute; top: 25%; right: 0%;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    {# In Progress Failures #}
+    <div class="col-xl-3 col-lg-3 col-md-auto mb-3">
+        <a href="{% url 'failures_all' %}?status=PR" style="text-decoration: none;">
+            <div class="home_card card border-left-primary shadow h-100 py-3">
+                <div class="card-body card-body-small">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="h4 font-weight-bold text-primary text-uppercase mb-1">
+                                ΣΕ ΕΞΕΛΙΞΗ </div>
+                        </div>
+                    </div>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2" >
+                            <div style="display: inline-block" class="display-2 mb-0 font-weight-bold text-gray-800" id="progress_failures_count">{{progress_failures}}
+                            </div>
+                            <i class="fas fa-sync-alt fa-2x text-gray-500" style="position: absolute; top: 25%; right: 0%;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    {# Closed Failures #}
+    <div class="col-xl-3 col-lg-3 col-md-auto mb-3">
+        <a href="{% url 'failures_all' %}?status=CL" style="text-decoration: none;">
+            <div class="home_card card border-left-success shadow h-100 py-3">
+                <div class="card-body card-body-small">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="h4 font-weight-bold text-success text-uppercase mb-1">
+                                ΔΙΕΚΠΕΡΑΙΩΜΕΝΕΣ </div>
+                        </div>
+                    </div>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2" >
+                            <div style="display: inline-block" class="display-2 mb-0 font-weight-bold text-gray-800" id="closed_failures_count">{{closed_failures}}
+                            </div>
+                            <i class="fas fa-clipboard-check fa-2x text-gray-500" style="position: absolute; top: 25%; right: 0%;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+</div>
+
+<h1>Αναφορές</h1>
+<div class="row">
+    {% if not request.user|in_group:"users" %}
+    {# New Reports #}
+    <div class="col-xl-3 col-lg-3 col-md-auto mb-3">
+        <a href="{% url 'reports_all'%}?status=NE" style="text-decoration: none;">
+            <div class="home_card card border-left-warning shadow h-100 py-3">
+                <div class="card-body card-body-small">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="h4 font-weight-bold text-warning text-uppercase mb-1">
+                                ΝΕΕΣ </div>
+                        </div>
+                    </div>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2" >
+                            <div style="display: inline-block" class="display-2 mb-0 font-weight-bold text-gray-800" id="new_reports_count">{{new_reports}}
+                            </div>
+                            <i class="fas fa-envelope fa-2x text-gray-500" style="position: absolute; top: 25%; right: 0%;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    {% endif %}
+
+    {# Open Reports #}
+    <div class="col-xl-3 col-lg-3 col-md-auto mb-3">
+        <a href="{% url 'reports_all' %}?status=OP" style="text-decoration: none;">
+            <div class="home_card card border-left-orange shadow h-100 py-3">
+                <div class="card-body card-body-small">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="h4 font-weight-bold text-orange text-uppercase mb-1">
+                                ΕΚΚΡΕΜΕΙΣ </div>
+                        </div>
+                    </div>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2" >
+                            <div style="display: inline-block" class="display-2 mb-0 font-weight-bold text-gray-800" id="open_reports_count">{{open_reports}}
+                            </div>
+                            <i class="fas fa-envelope-open-text fa-2x text-gray-500" style="position: absolute; top: 25%; right: 0%;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+
+    {# In Progress Reports #}
+    <div class="col-xl-3 col-lg-3 col-md-auto mb-3">
+        <a href="{% url 'reports_all' %}?status=PR" style="text-decoration: none;">
+            <div class="home_card card border-left-primary shadow h-100 py-3">
+                <div class="card-body card-body-small">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="h4 font-weight-bold text-primary text-uppercase mb-1">
+                                ΣΕ ΕΞΕΛΙΞΗ </div>
+                        </div>
+                    </div>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2" >
+                            <div style="display: inline-block" class="display-2 mb-0 font-weight-bold text-gray-800" id="progress_reports_count">{{progress_reports}}
+                            </div>
+                            <i class="fas fa-sync-alt fa-2x text-gray-500" style="position: absolute; top: 25%; right: 0%;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+
+   {# Closed Reports #}
+    <div class="col-xl-3 col-lg-3 col-md-auto mb-3">
+        <a href="{% url 'reports_all' %}?status=CL" style="text-decoration: none;">
+            <div class="home_card card border-left-success shadow h-100 py-3">
+                <div class="card-body card-body-small">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="h4 font-weight-bold text-success text-uppercase mb-1">
+                                ΔΙΕΚΠΕΡΑΙΩΜΕΝΕΣ </div>
+                        </div>
+                    </div>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2" >
+                            <div style="display: inline-block" class="display-2 mb-0 font-weight-bold text-gray-800" id="closed_reports_count">{{closed_reports}}
+                            </div>
+                            <i class="fas fa-clipboard-check fa-2x text-gray-500" style="position: absolute; top: 25%; right: 0%;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+</div>
+
+
+<script> 
+    var failure_audio = new Audio("{% static 'dides_helpdesk/assets/new_failure_ding.mp3' %}");
+    failure_audio.load();
+
+    setInterval(() => {
+        $.ajax({
+            url: '/ajax/get_counters/', 
+            success: function(counters){
+                new_failure_count = counters["new_failures_count"]
+                open_failure_count = counters["open_failures_count"]
+                progress_failure_count = counters["progress_failures_count"]
+                closed_failure_count = counters["closed_failures_count"]
+
+                new_report_count = counters["new_reports_count"]
+                open_report_count = counters["open_reports_count"]
+                progress_report_count = counters["progress_reports_count"]
+                closed_report_count = counters["closed_reports_count"]
+
+                new_failure_count_old = parseInt($("#new_failures_count")[0].innerText)
+                open_failure_count_old = parseInt($("#open_failures_count")[0].innerText)
+                progress_failure_count_old = parseInt($("#progress_failures_count")[0].innerText)
+                closed_failure_count_old = parseInt($("#closed_failures_count")[0].innerText)
+
+                new_report_count_old = parseInt($("#new_reports_count")[0].innerText)
+                open_report_count_old = parseInt($("#open_reports_count")[0].innerText)
+                progress_report_count_old = parseInt($("#progress_reports_count")[0].innerText)
+                closed_report_count_old = parseInt($("#closed_reports_count")[0].innerText)
+
+                $("#new_failures_count")[0].innerText = counters["new_failures_count"];
+                $("#open_failures_count")[0].innerText = counters["open_failures_count"];
+                $("#progress_failures_count")[0].innerText = counters["progress_failures_count"];
+                $("#closed_failures_count")[0].innerText = counters["closed_failures_count"];
+                $("#new_reports_count")[0].innerText = counters["new_reports_count"];
+                $("#open_reports_count")[0].innerText = counters["open_reports_count"];
+                $("#progress_reports_count")[0].innerText = counters["progress_reports_count"];
+                $("#closed_reports_count")[0].innerText = counters["closed_reports_count"];
+
+                if (new_failure_count > new_failure_count_old) 
+                    failure_audio.play();
+            }
+        });
+    }, 900000); // refresh every 15 minutes
+
+</script>
+
+{% endblock %}
+
+{% endblock %}

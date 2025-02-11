@@ -1,0 +1,66 @@
+{% extends 'core/base.html' %}
+
+{% block title %}HELPDESK | {% endblock %}
+
+{% block content %}
+<div class="p-10 lg:p-20 text-center">
+    <h1 class="text-3xl lg:text-6xl text-white">ΣΥΝΟΜΙΛΙΕΣ HELPDESK</h1>
+</div>
+
+<a href="{% url 'create_room' %}" class="px-5 py-3 block rounded-xl text-white bg-teal-600 hover:bg-teal-700">ΔΗΜΙΟΥΡΓΙΑ ΣΥΝΟΜΙΛΙΑΣ</a>
+
+<div class="w-full flex flex-wrap items-center">
+    {% for room in rooms %}
+        <div class="w-full lg:w-1/4 px-3 py-3">
+            <div id="room-{{ room.slug }}" class="p-4 bg-white shadow rounded-xl text-center relative">
+                <h2 class="mb-5 text-2xl font-semibold">
+                    {{ room.name }}
+                    {% if room_unread_counts|get_item:room.id > 0 %}
+                        <span id="unread-count-{{ room.slug }}" class="text-xs ml-2 inline-block bg-red-500 text-white rounded-full px-2 py-1">
+                            {{ room_unread_counts|get_item:room.id }}
+                        </span>
+                    {% endif %}
+                </h2>
+                <a href="{% url 'room' room.slug %}" class="px-5 py-3 block rounded-xl text-white bg-teal-600 hover:bg-teal-700">Join</a>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ room.slug|json_script:"json-roomname" }}
+{{ request.user.username|json_script:"json-username" }}
+
+<script>
+    const roomName = JSON.parse(document.getElementById('json-roomname').textContent);
+    const userName = JSON.parse(document.getElementById('json-username').textContent);
+    const chatSocket = new WebSocket(
+        'ws://' + window.location.host + '/ws/' + encodeURIComponent(roomName) + '/'
+    );
+
+    chatSocket.onclose = function(e) {
+        console.log('Chat socket closed unexpectedly');
+    };
+
+    chatSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+    
+        if (data.type === 'unread_count_update') {
+            const unreadCounts = data.unread_counts;
+            // Update the unread message count for each room
+            for (const roomId in unreadCounts) {
+                const count = unreadCounts[roomId];
+                const roomElement = document.querySelector(`#room-${roomId}`);
+                if (roomElement) {
+                    const unreadBadge = roomElement.querySelector('.unread-badge');
+                    unreadBadge.textContent = count > 0 ? count : '';
+                }
+            }
+        } else if (data.type === 'chat_message') {
+            // Handle new chat messages
+        }
+    };
+    
+</script>
+{% endblock %}

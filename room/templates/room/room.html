@@ -1,0 +1,424 @@
+{% extends 'core/base.html' %}
+
+{% block title %}HELPDESK | {% endblock %}
+{% load custom_filters %}
+
+{% block content %}
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ room.name }} - Chat Room</title>
+
+    <!-- Bootstrap CSS (for basic layout) -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Google Font for better typography -->
+    <link href="{% static 'css/css2.css' %}" rel="stylesheet">
+
+    <!-- Custom CSS for modern UI -->
+    <style>
+        body {
+            font-family: 'Colibri', sans-serif;
+            background-color: #e0f7fa;  /* Change the background color of the entire app */
+            margin: 0;
+            padding: 0;
+            overflow-y: hidden;
+        }
+
+        /* Sidebar styles */
+        .sidebar {
+            background-color: #456e91;  /* Change sidebar background color */
+            color: #fff;
+            padding: 20px;
+            height: 79vh;
+            overflow-y: auto;
+            border-right: 2px solid #ccc;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar contact item */
+        .sidebar .contact-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            cursor: pointer;
+            border-radius: 8px;
+            padding: 10px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .sidebar .contact-item:hover {
+            background-color: #506e95;  /* Darker hover color */
+            transform: scale(1.05);
+        }
+
+        .sidebar .contact-item.active {
+            background-color: #142840;  /* Active contact color */
+            font-weight: bold;
+        }
+
+        /* Contact name styles */
+        .sidebar .contact-item .contact-name {
+            font-size: 18px;  /* Larger font size for the contact name */
+            font-weight: 600;  /* Make the name bold */
+            color: #ffccbc;  /* Change the text color of the name */
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .sidebar .contact-item .badge {
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50%;
+            padding: 5px 10px;
+        }
+
+        .sidebar .contact-item .contact-avatar {
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+
+        /* Chat area styles */
+        .chat-area {
+            background-color: #fff;
+            padding: 30px 20px;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding-bottom: 180px;
+        }
+
+        .messages-container {
+            max-height: 100%;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            display: flex;
+            margin-bottom: 30px;
+        }
+
+        .message.sent {
+            justify-content: flex-end;
+        }
+
+        .message.received {
+            justify-content: flex-start;
+        }
+
+        .message .message-bubble {
+            max-width: 50%; /* Reduced the max width for the message bubble */
+            padding: 12px;
+            border-radius: 18px;
+            font-size: 15px;
+            line-height: 1.5;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            word-wrap: break-word;  /* Allows long words to break */
+            overflow-wrap: break-word;  /* Ensures that even unbreakable words wrap */
+        }
+
+        .message.sent .message-bubble {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .message.received .message-bubble {
+            background-color: #e9ecef;
+            color: #333;
+        }
+
+        .message .timestamp,
+        .message .message-file {
+            font-size: 12px;
+            color: black;
+        }
+
+        /* Modernized Message Input Area */
+        .chat-input-container {
+            position: fixed;
+            left: 50%;  /* Center the input container horizontally */
+            bottom: 20px;
+            transform: translateX(-50%);
+            padding: 20px 30px;
+            background-color: #dfe7f5;
+            border-top: 1px solid #ddd;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            width: 90%;  /* Adjusted to take up 90% width */
+            max-width: 800px;  /* Max width reduced to 800px */
+            z-index: 0;
+            height: 14vh;
+        }
+
+        .chat-input-container .input-group {
+            display: flex;
+            width: 100%; /* Set input group to full width */
+            border-radius: 50px;
+            margin-bottom: 15px;
+            height: 1vh;
+            padding-left: 20px;
+        }
+
+        .input-group input {
+            display: flex;
+            border-radius: 50px;
+            border: 1px solid #ddd;
+            padding: 15px 20px;
+            font-size: 22px;
+            outline: none;
+            width: 100%; /* Make input field take the full width of its container */
+        }
+
+        .input-group button {
+            border-radius: 50px;
+            background-color: #456e91;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .input-group button:hover {
+            background-color: #0056b3;
+        }
+
+        .input-group input[type="file"] {
+            display: none;
+        }
+
+        .file-label {
+            display: flex;
+            cursor: pointer;
+            font-size: 30px;
+            color: #f70a0a;
+            padding-left: 10px;
+            padding-right: 10px;
+            transition: color 0.3s ease;
+            margin-right: 40px;
+        }
+
+        .file-label:hover {
+            color: #fff;
+        }
+
+        .file-preview {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .file-preview span {
+            color: #333;
+            margin-right: 10px;
+        }
+
+        .file-preview .remove-file {
+            color: #dc3545;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        @media (max-width: 768px) {
+            .chat-input-container {
+                padding: 15px 20px;
+            }
+
+            .input-group input {
+                font-size: 14px;
+                padding: 12px 15px;
+            }
+
+            .input-group button {
+                font-size: 14px;
+                padding: 12px 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container-fluid p-0">
+    <div class="row">
+        <!-- Sidebar (Rooms/Contacts) -->
+        <div class="col-md-3 sidebar">
+            <div class="contact-item active">
+                <div class="d-flex align-items-center">
+                    {% comment %} <img src="https://ui-avatars.com/api/?name={{ room.name|urlencode }}&size=60&background=random" alt="{{ room.name }}" class="contact-avatar"> {% endcomment %}
+                    {% comment %} <span class="contact-name">{{ room.name }}</span> {% endcomment %}
+                </div>
+            </div>
+
+            <div class="contacts">
+                {% for room in rooms %}
+                    <a href="{% url 'room' room.slug %}" class="contact-item {% if room.slug == room_name %} active {% endif %}">
+                        <div class="d-flex align-items-center">
+                            {% comment %} <img src="https://ui-avatars.com/api/?name={{ room.name|urlencode }}&size=60&background=random" alt="{{ room.name }}" class="contact-avatar"> {% endcomment %}
+                            <div class="w-100">
+                                <div class="d-flex justify-content-between">
+                                    <span class="contact-name">{{ room.name }}</span>
+                                    {% if room_unread_counts|get_item:room.id > 0 %}
+                                        <span class="badge badge-danger">{{ room_unread_counts|get_item:room.id }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Main Chat Area -->
+        <div class="col-md-9 chat-area">
+            <div class="messages-container" id="messagesContainer">
+                {% for message in messages %}
+                    <div class="message {% if message.user == request.user %}sent{% else %}received{% endif %}">
+                        <div class="message-bubble">
+                            <div class="d-flex justify-content-between">
+                                <span><strong>{{ message.user.username }}</strong> <span class="timestamp">{{ message.date_added|date:"Y-m-d H:i" }}</span></span>
+                            </div>
+                            <p>{{ message.content }}</p>
+                            {% if message.file %}
+                                <a href="{{ message.file.url }}" target="_blank" class="message-file">Download File</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Message Input -->
+<div class="chat-input-container">
+    <div id="filePreview" class="file-preview" style="display: none;">
+        <span id="fileName"></span>
+        <span class="remove-file" onclick="removeFile()">❌</span>
+    </div>
+    <form id="messageForm">
+        <div class="input-group">
+            <textarea id="messageInput" class="form-control" placeholder="Πληκτρολογήστε ένα μήνυμα..." required rows="1"></textarea>
+            <input type="file" class="form-control-file" id="fileInput">
+            <label for="fileInput" class="file-label">📎</label>
+            <button class="btn btn-primary" type="submit">Αποστολή</button>
+        </div>
+    </form>
+</div>
+
+<!-- JS Libraries -->
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+
+<script>
+    // Automatic scroll to bottom
+    const messagesContainer = document.getElementById('messagesContainer');
+
+    // Function to handle automatic scroll when a new message is added
+    function scrollToBottom() {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    // Ensure chat scrolls to the bottom initially
+    scrollToBottom();
+
+    // Handle incoming messages via WebSocket
+    const socket = new WebSocket('ws://' + window.location.host + '/ws/{{ room.slug }}/');
+    socket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+        const newMessage = document.createElement('div');
+        newMessage.classList.add('message', data.username === "{{ request.user.username }}" ? 'sent' : 'received');
+        newMessage.innerHTML = 
+            `<div class="message-bubble">
+                <div class="d-flex justify-content-between">
+                    <span><strong>${data.username}</strong> <span class="timestamp">${new Date(data.timestamp).toLocaleString()}</span></span>
+                </div>
+                <p>${data.message}</p>
+                ${data.file ? `<a href="${data.file}" target="_blank" class="message-file">Download File</a>` : ''}
+            </div>`;
+        messagesContainer.appendChild(newMessage);
+        scrollToBottom(); // Scroll to bottom on new message
+    };
+
+    // Handle file attachment preview and remove
+    const fileInput = document.getElementById('fileInput');
+    const filePreview = document.getElementById('filePreview');
+    const fileNameElement = document.getElementById('fileName');
+
+    fileInput.addEventListener('change', function () {
+        if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            filePreview.style.display = 'flex';
+            fileNameElement.textContent = file.name;
+        } else {
+            filePreview.style.display = 'none';
+        }
+    });
+
+    function removeFile() {
+        fileInput.value = '';
+        filePreview.style.display = 'none';
+    }
+
+    // Automatically adjust the height of the message input area
+    const messageInput = document.getElementById('messageInput');
+
+    messageInput.addEventListener('input', function () {
+        // Reset the height to auto to shrink the textarea as well
+        messageInput.style.height = 'auto';
+        // Set the height of the textarea based on content but limit it to a max-height
+        messageInput.style.height = Math.min(messageInput.scrollHeight, 10) + 'px'; // Max height is 80px
+        messageInput.style.width = Math.min(messageInput.scrollHeight, 10) + 'px'; // Max height is 80px
+
+    });
+
+    // Handle 'Enter' key press to send the message
+    messageInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) {  // Check for 'Enter' without Shift
+            e.preventDefault();  // Prevent the default 'Enter' behavior (new line)
+            document.getElementById('messageForm').requestSubmit();  // Use requestSubmit to trigger form submission
+        }
+    });
+
+    // Sending message via form submission
+    document.getElementById('messageForm').onsubmit = function (e) {
+        e.preventDefault();
+        
+        const messageData = {
+            message: messageInput.value,
+            username: "{{ request.user.username }}",
+            room: "{{ room.slug }}",
+        };
+
+        if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                messageData.file = event.target.result; // Convert file to Data URL
+                socket.send(JSON.stringify(messageData)); // Send message with file
+            };
+            reader.readAsDataURL(file); // Read the file as Data URL
+        } else {
+            socket.send(JSON.stringify(messageData)); // Send message without file
+        }
+
+        messageInput.value = ''; // Clear the input
+        messageInput.style.height = 'auto';  // Reset height after sending message
+        removeFile();  // Clear the attached file preview
+    };
+</script>
+
+</body>
+</html>
+{% endblock %}

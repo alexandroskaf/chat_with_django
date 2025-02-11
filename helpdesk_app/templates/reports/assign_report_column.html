@@ -1,0 +1,9 @@
+{% if not record.status == "CL" %}
+<a href="{% url 'report_single' record.id %}#assign" class="btn btn-default btn-circle btn-bg">
+  <i class="fas fa-user-plus"></i>
+</a>
+{% else %}
+<div class="btn btn-default btn-circle btn-bg disabled">
+  <i class="fas fa-user-plus"></i>
+</div>
+{% endif %}

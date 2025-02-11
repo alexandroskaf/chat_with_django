@@ -1,0 +1,63 @@
+/* Utility Classes: Tailwind-like Styles */
+
+/* Spacing Utilities */
+.p-4 {
+    padding: 1rem; /* padding 1rem (16px) */
+}
+.m-4 {
+    margin: 1rem; /* margin 1rem (16px) */
+}
+
+/* Text Utilities */
+.text-center {
+    text-align: center;
+}
+.text-lg {
+    font-size: 1.25rem; /* 20px */
+}
+.text-xl {
+    font-size: 1.5rem; /* 24px */
+}
+
+/* Font Weight */
+.font-bold {
+    font-weight: bold;
+}
+
+/* Background Utilities */
+.bg-gray-100 {
+    background-color: #f7fafc; /* Light gray */
+}
+.bg-blue-500 {
+    background-color: #3b82f6; /* Blue */
+}
+
+/* Text Color */
+.text-white {
+    color: #fff;
+}
+
+/* Borders */
+.border {
+    border-width: 1px;
+    border-color: #e5e7eb; /* Light gray */
+}
+.rounded {
+    border-radius: 0.375rem; /* rounded corners */
+}
+
+/* Flexbox Utilities */
+.flex {
+    display: flex;
+}
+.items-center {
+    align-items: center;
+}
+.justify-center {
+    justify-content: center;
+}
+
+/* Box Shadow */
+.shadow-lg {
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}

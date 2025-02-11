@@ -1,0 +1,288 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Create Room | {% endblock %}
+
+{% block content %}
+<!-- Adjust the heading size to make it smaller -->
+<style>
+    /* Global Styles */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f7fb;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Page Header */
+    .page-header {
+        padding: 40px 20px;
+        text-align: center;
+        background-color: #456e91;
+    }
+
+    .page-header h1 {
+        font-size: 2.5rem;
+        color: #fff;
+    }
+
+    /* Form Container */
+    .form-container {
+        width: 100%;
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Form Group */
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    /* Input Container */
+    .input-container {
+        position: relative;
+        width: 100%;
+    }
+
+    /* Form Input */
+    .form-input {
+        width: 100%;
+        padding: 12px 20px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e0;
+        box-sizing: border-box;
+        font-size: 1rem;
+        margin-top: 8px;
+        outline: none;
+    }
+
+    .form-input:focus {
+        border-color: #38b2ac;
+        box-shadow: 0 0 5px rgba(56, 178, 172, 0.5);
+    }
+
+    /* User List */
+    .user-list {
+        max-height: 200px;
+        overflow-y: auto;
+        margin-top: 10px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+    }
+
+    .user-item {
+        padding: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        background-color: #fff;
+        transition: background-color 0.2s ease;
+    }
+
+    .user-item:hover {
+        background-color: #edf2f7;
+    }
+
+    .add-user-btn {
+        background-color: #456e91;
+        color: #fff;
+        padding: 4px 8px;
+        border-radius: 4px;
+        cursor: pointer;
+        border: none;
+    }
+
+    .add-user-btn:hover {
+        background-color: #319795;
+    }
+
+    /* Selected Users */
+    .selected-users h3 {
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    .selected-bubbles {
+        margin-top: 10px;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .selected-bubble {
+        background-color: #456e91;
+        color: #fff;
+        padding: 8px 15px;
+        border-radius: 16px;
+        margin: 5px;
+        display: flex;
+        align-items: center;
+    }
+
+    .remove-btn {
+        background: transparent;
+        border: none;
+        color: #fff;
+        margin-left: 5px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .remove-btn:hover {
+        color: #e53e3e;
+    }
+
+    /* Submit Button */
+    .submit-btn {
+        background-color: #456e91;
+        color: #fff;
+        padding: 12px 20px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        font-size: 1.1rem;
+        width: 100%;
+        transition: background-color 0.3s ease;
+    }
+
+    .submit-btn:hover {
+        background-color: #319795;
+    }
+</style>
+
+<div class="page-header">
+    <h1>ΔΗΜΙΟΥΡΓΙΑ ΣΥΝΟΜΙΛΙΑΣ</h1>
+</div>
+
+<!-- Move container up and increase the form container's size with larger padding -->
+<div class="form-container">
+    <form method="post" id="create-room-form">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            {{ form.name.label_tag }}
+            <div class="input-container">
+                <!-- Render the room name field with Django form -->
+                {{ form.name }}
+            </div>
+            {% if form.name.errors %}
+                <div class="form-errors">
+                    {% for error in form.name.errors %}
+                        <p class="error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        
+
+        <!-- User Selection -->
+        <div class="form-group">
+            {{ form.users.label_tag }}
+            <div class="input-container">
+                <input type="text" id="user-search" class="form-input" placeholder="Search users..." onkeyup="filterUsers()">
+                
+                <div id="user-list" class="user-list">
+                    {% for user in form.users.field.queryset %}
+                        <div class="user-item">
+                            <span>{{ user.username }}</span>
+                            <button type="button" class="add-user-btn" data-user-id="{{ user.id }}" data-username="{{ user.username }}">+</button>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Hidden Input for Selected Users -->
+        <input type="hidden" name="selected_users" id="selected-users-input">
+
+        <!-- Selected Users Display -->
+        <div class="selected-users">
+            <h3>Selected Users:</h3>
+            <div id="user-bubbles" class="selected-bubbles"></div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="submit-btn">Δημιουργία</button>
+    </form>
+</div>
+
+<script>
+// Function to filter users in the search box
+function filterUsers() {
+    const input = document.getElementById('user-search');
+    const filter = input.value.toLowerCase();
+    const userList = document.getElementById('user-list');
+    const users = userList.getElementsByClassName('user-item');
+
+    for (let i = 0; i < users.length; i++) {
+        const txtValue = users[i].textContent || users[i].innerText;
+        users[i].style.display = txtValue.toLowerCase().includes(filter) ? "" : "none";
+    }
+}
+
+// Function to update the hidden input field with selected users
+function updateSelectedUsersInput() {
+    const selectedUsersContainer = document.getElementById('user-bubbles');
+    const selectedUserIds = Array.from(selectedUsersContainer.children).map(span => span.dataset.userId);
+    document.getElementById('selected-users-input').value = selectedUserIds.join(',');
+}
+
+// Add user bubbles when "+" button is clicked
+document.querySelectorAll('.add-user-btn').forEach(button => {
+    button.addEventListener('click', function(event) {
+        event.preventDefault();
+        const username = this.dataset.username;
+        const userId = this.dataset.userId;
+        const selectedUsersContainer = document.getElementById('user-bubbles');
+
+        // Only add if not already selected
+        if (!Array.from(selectedUsersContainer.children).some(span => span.textContent.includes(username))) {
+            const span = document.createElement('span');
+            span.className = 'selected-bubble';
+            span.textContent = username;  // Set text to the username
+            span.dataset.userId = userId;  // Store user ID in dataset for easy access
+
+            // Create a remove button (x)
+            const removeBtn = document.createElement('button');
+            removeBtn.innerHTML = '&times;';
+            removeBtn.className = 'remove-btn';
+            removeBtn.onclick = function() {
+                span.remove(); // Remove the bubble
+                updateSelectedUsersInput(); // Update hidden input
+            };
+
+            span.appendChild(removeBtn); // Append the remove button to the bubble
+            selectedUsersContainer.appendChild(span);
+            updateSelectedUsersInput(); // Update hidden input
+        }
+    });
+});
+
+// Prevent form submission if no users are selected or if room name contains invalid characters
+document.querySelector('#create-room-form').addEventListener('submit', function(event) {
+    const roomNameInput = document.getElementById('name-input');  // This is the form field rendered by Django
+    
+    const regex = /^[A-Za-z0-9\s]*$/;
+    if (!regex.test(roomNameInput.value)) {
+        event.preventDefault();  // Prevent form submission
+        alert('Please use only Latin characters, numbers, and spaces for the room name.');
+        roomNameInput.focus();
+        return;  // Prevent further submission
+    }
+
+    // Ensure at least one user is selected
+    if (document.getElementById('selected-users-input').value.trim() === '') {
+        event.preventDefault();  // Prevent form submission
+        alert('Please select at least one user.');
+    }
+    
+   
+    
+});
+
+</script>
+
+{% endblock %}

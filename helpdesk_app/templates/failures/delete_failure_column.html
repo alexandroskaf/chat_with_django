@@ -1,0 +1,11 @@
+{% load auth_extras %}
+
+{% if record|can_delete:user %}
+  <a href="{% url 'failure_single' record.id %}#delete" class='btn btn-default btn-circle btn-bg'>
+    <i class='fas fa-trash'></i>
+  </a>
+{% else %}
+  <div class="btn btn-default btn-circle btn-bg disabled">
+    <i class="fas fa-trash"></i>
+  </div>
+{% endif %}

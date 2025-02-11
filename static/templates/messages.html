@@ -1,0 +1,17 @@
+{% for message in messages %}
+  <div id="message_div" style="position: fixed; z-index: 999; width: 90%;" class="justify-contents-between">
+    <div class="alert {{ message.tags }} alert-dismissible" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      {{ message }}
+    </div>
+  </div>
+{% endfor %}
+
+{% comment %} to automatically fade out the message after 1500ms {% endcomment %}
+<script type="text/javascript"> 
+        setTimeout(function () { 
+              $('#message_div').fadeOut(1500); 
+        }, 1500); 
+</script>

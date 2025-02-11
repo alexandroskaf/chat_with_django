@@ -1,0 +1,141 @@
+{% load static %}
+
+{% load dict_extras %}
+
+<!DOCTYPE html>
+<html lang="el">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Κατάσταση Λειτουργικότητας {{date_from}}-{{date_to}}</title>
+
+  <link rel="icon" type="image/png" href="{% static 'dides_helpdesk/assets/favicon.ico' %}">
+  <link href="{% static 'dides_helpdesk/css/sb-admin-2.css'%}" rel="stylesheet" />
+  <link href="{% static 'dides_helpdesk/css/helpdesk-style.css'%}" rel="stylesheet" />
+
+<style type="text/css">
+@media {
+  @page {
+    size: A4 landscape !important;
+    max-height:100% !important;
+    max-width:100% !important;
+  }
+}
+@media print {
+  .hideForPrint {
+    display: none;
+  }
+}
+body{     
+  font-size: x-small !important;
+  font-family: 'Times New Roman', serif !important; 
+  width: 100% !important;
+  height: 100% !important;
+}
+
+</style>
+
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="row justify-content-left align-items-center mb-2">
+        <img src="{% static 'dides_helpdesk/assets/rsz_1ges_logo_bw.png' %}"/>
+        &nbsp;&nbsp;
+        <img src="{% static 'dides_helpdesk/assets/rsz_favicon_bw.png' %}"/>
+      <div class="col align-items-start justify-content-left">
+        <h6 style="color: black; font-size: small !important;" class="mb-0">ΓΕΝΙΚΟ ΕΠΙΤΕΛΕΙΟ ΣΤΡΑΤΟΥ</h6>
+        <h6 style="color: black; font-size: small !important;" class="mb-0">487 ΤΑΓΜΑ ΔΙΑΒΙΒΑΣΕΩΝ</h6>
+        <h6 style="color: black; font-size: small !important;" class="mb-0">ΚΕΝΤΡΟ ΕΠΙΚΟΙΝΩΝΙΩΝ</h6>
+      </div>
+      <a href="{% url 'home' %}" class="btn btn-secondary mr-1 hideForPrint" >Αρχική Σελίδα</a>
+      <button type="button" class="btn btn-primary hideForPrint" onclick="window.print();">Δημιουργία PDF</button>
+    </div>
+    <br/>
+    <div class="row justify-content-center text-center">
+      <div>
+        <h5 style="color: black;" class="text-uppercase text-center mb-0">ΚΑΤΑΣΤΑΣΗ ΛΕΙΤΟΥΡΓΙΚΟΤΗΤΑΣ ΕΦΑΡΜΟΓΗΣ<br/>"ΚΔΕΣ - ΖΕΥΞΙΣ"</h5>
+        <p style="color: black; font-size: small;" class="text-center m-1">{{date_from}} - {{date_to}}</p>
+      </div>
+    </div>
+
+
+    {% for name, table in failure_tables.items %}
+    {% if table %}
+    <div class="card-header text-center py-1" style="color: black; background-color: lightgray !important;">
+      <h5 class="m-0 font-weight-bold">{{name}}</h5>
+    </div>
+    <div class="table-responsive">
+      <table style="text-align: left;" class="table table-sm table-bordered">
+        <thead class="thead-dark align-middle" style="text-align: center;">
+          <tr>
+            <th style="font-size: small !important;" scope="col">Α/Α</th>
+            {% if name == "ΔΙΔΕΣ" %}
+            <th style="font-size: small !important;">ΨΗΦΙΑΚΟ ΚΥΚΛΩΜΑ</th>
+            {% elif name == "ΔΟΡΥΦΟΡΙΚΑ" %}
+            <th style="font-size: small !important;">ΚΟΜΒΟΣ</th>
+            {% elif name == "ΕΥΡΥΖΩΝΙΚΟ" %}
+            <th style="font-size: small !important;">ΠΟΜΠΟΔΕΚΤΗΣ</th>
+            {% elif name == "ΕΨΑΔ-ΑΤΚ" %}
+            <th style="font-size: small !important;">ΓΡΑΜΜΗ</th>
+            {% elif name == "ΠΥΡΣΕΙΑ" %}
+            <th style="font-size: small !important;">ΕΞΥΠΗΡΕΤΗΤΗΣ</th>
+            {% elif name == "HARP" %}
+            <th style="font-size: small !important;">ΑΝΤΑΠΟΚΡΙΤΗΣ</th>
+            {% elif name == "ΣΕΖΜ-ΕΡΜΗΣ" %}
+            <th style="font-size: small !important;">ΚΟΜΒΟΣ/ΖΕΥΞΗ</th>
+            {% endif %}
+            <th style="font-size: small !important;" scope="col">ΤΥΠΟΣ ΒΛΑΒΗΣ</th>
+            <th style="font-size: small !important;" scope="col">ΠΕΡΙΓΡΑΦΗ</th>
+            <th style="font-size: small !important;" scope="col">ΜΟΝΑΔΑ (ΣΧΗΜΑΤΙΣΜΟΣ)</th>
+            <th style="font-size: small !important;" scope="col">ΑΠΟ</th>
+          </tr>
+        </thead>
+        <tbody>
+      {% for failure in table %}
+            <tr>
+              <th scope="col">{{failure.number}}</th>
+              {% if failure.dig_connection_name %}
+              <td scope="col" style="white-space: pre !important;">DIG {{failure.dig_connection_name}}
+{{failure.name}}</td>
+              {% else %}
+              <td scope="col">{{failure.name}}</td>
+              {% endif %}
+              {% if failure.failure_type %}
+              <td scope="col">{{failure.failure_type}}</td>
+              {% else %}
+              <td scope="col">---</td>
+              {% endif %}
+              {% if failure.description %}
+              <td scope="col">{{failure.description}}</td>
+              {% else %}
+              <td scope="col">---</td>
+              {% endif %}
+              {% if failure.unit %}
+              <td scope="col">{{failure.unit}} ({{failure.supervisor_unit}})</td>
+              {% else %}
+              <td scope="col">---</td>
+              {% endif %}
+              {% if failure.date_start %}
+              <td scope="col">{{failure.date_start}}</td>
+              {% else %}
+              <td scope="col">---</td>
+              {% endif %}
+            </tr>
+      {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+    {% endfor %}
+  </div>
+
+</body>
+
+</html>

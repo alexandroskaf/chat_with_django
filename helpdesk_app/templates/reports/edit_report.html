@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+{% load auth_extras %}
+
+{% block page_content %}
+
+{% block title %}
+{% if form.instance|can_edit:user %}
+<h1 class="h3 mb-0 text-gray-800"> Επεξεργασία Αναφοράς </h1>
+{% else %}
+<h1 class="h3 mb-0 text-gray-800"> Επισκόπηση Αναφοράς </h1>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+
+<!-- Content Row -->
+<div class="row">
+
+  <div class="col-xl-8 col-lg-7">
+    <div class="card shadow mb-4">
+      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary"> Βλάβη {{form.number.value}}</h6>
+      </div>
+      <div class="card-body border-left-primary uppercase-input">
+        <form method='POST' action="{% url 'report_single' form.instance.id %}" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{ form.description|as_crispy_field }}
+          {{ form.solution|as_crispy_field }}
+          {{ form.unit|as_crispy_field }}
+          {{ form.means|as_crispy_field }}
+          {% if not user.is_simple_user %}
+          {{ form.status|as_crispy_field }}
+          {% endif %}
+          {{ form.assigned_dispatcher|as_crispy_field }}
+          {{ form.attached_file|as_crispy_field }}
+          {{ form.primary_phone|as_crispy_field }}
+          {{ form.secondary_phone|as_crispy_field }}
+        {% if form.instance|can_edit:user %}
+          <div class="d-flex justify-content-around">
+          <a class="btn btn-default btn-user btn-block" href="{% url 'report_single' form.instance.id %}">ΑΚΥΡΩΣΗ</a>
+          <input type="hidden" name="_method" value="put" />
+          <input class="btn btn-primary btn-user btn-block" id='submitBtn' type='submit' value="Ανανέωση" />
+          </div>
+        </form>
+        {% else %}
+        <a class="btn btn-default btn-user btn-block" href="{% url 'report_single' form.instance.id %}">ΑΚΥΡΩΣΗ</a>          
+        </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+
+
+  {% endblock %}
+
+
+  {% endblock %}
