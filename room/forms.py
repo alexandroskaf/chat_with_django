@@ -1,7 +1,7 @@
 # forms.py
 from django import forms
-from helpdesk_app.models import CustomUser
-from helpdesk_app.models import Room, Message
+from .models import CustomUser
+from .models import Room, Message
 from django.core.exceptions import ValidationError
 import re
 

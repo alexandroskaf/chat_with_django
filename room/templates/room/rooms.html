@@ -15,11 +15,7 @@
             <div id="room-{{ room.slug }}" class="p-4 bg-white shadow rounded-xl text-center relative">
                 <h2 class="mb-5 text-2xl font-semibold">
                     {{ room.name }}
-                    {% if room_unread_counts|get_item:room.id > 0 %}
-                        <span id="unread-count-{{ room.slug }}" class="text-xs ml-2 inline-block bg-red-500 text-white rounded-full px-2 py-1">
-                            {{ room_unread_counts|get_item:room.id }}
-                        </span>
-                    {% endif %}
+                    
                 </h2>
                 <a href="{% url 'room' room.slug %}" class="px-5 py-3 block rounded-xl text-white bg-teal-600 hover:bg-teal-700">Join</a>
             </div>

@@ -2,7 +2,7 @@ import os
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render, redirect
-from helpdesk_app.models import Room, Message, CustomUser, RoomUser
+from .models import Room, Message, CustomUser, RoomUser
 from .forms import RoomForm, MessageForm
 from django.conf import settings
 import re

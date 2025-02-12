@@ -1,5 +1,6 @@
 from django.contrib import admin
-from helpdesk_app.models import Room, Message
+from .models import Room, Message, CustomUser
 # Register your models here.
+admin.site.register(CustomUser)
 admin.site.register(Room)
 admin.site.register(Message)

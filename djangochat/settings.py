@@ -13,10 +13,9 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
@@ -24,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'django-insecure-_$0piyib=#^p6=k8c4xvv=mtx)*od!)ew$8xw0x_tvqels%k!w'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = int(os.environ.get("DEBUG", "0"))
+DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.56.1', 'localhost', '127.0.0.1','10.0.2.4','0.0.0.0']
+ALLOWED_HOSTS = ['*', 'localhost', '127.0.0.1',]
 
 
 LOGOUT_REDIRECT_URL = '/'
@@ -49,7 +48,7 @@ INSTALLED_APPS = [
     'core',
     'room',
     'corsheaders',
-    'helpdesk_app',
+    
 ]
 
 MIDDLEWARE = [
@@ -63,7 +62,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 CORS_ALLOWED_ORIGINS = [
-    "https://10.0.2.4", # Replace with your other app's URL
+    "https://127.0..0.1", # Replace with your other app's URL
 ]
 ROOT_URLCONF = 'djangochat.urls'
 
@@ -105,52 +104,19 @@ CHANNEL_LAYERS = {
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': str(BASE_DIR / 'db.sqlite3'),
-#         "TEST": {
-#             "NAME": BASE_DIR / "db.sqlite3",
-#         },
-#     },
-#     'external_db': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'dides_helpdesk.prod',
-#         'USER': 'POSTGRES_PROD_DIDES_USER',
-#         'PASSWORD': 'POSTGRES_PROD_DIDES_PASSWORD',
-#         'HOST': '172.18.0.2',  # if the PostgreSQL database is in Docker
-#         'PORT': '5432',  # default PostgreSQL port
-#         'OPTIONS': {
-#             'options': '-c timezone=UTC',
-#         }
-#     }
-# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dides_helpdesk.prod',
-        'USER': 'POSTGRES_PROD_DIDES_USER',
-        'PASSWORD': 'POSTGRES_PROD_DIDES_PASSWORD',
-        'HOST': 'db',  # if the PostgreSQL database is in Docker
-        'PORT': '5432',  # default PostgreSQL port
-        'OPTIONS': {
-            'options': '-c timezone=UTC',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': str(BASE_DIR / 'db.sqlite3'),
+        "TEST": {
+            "NAME": str(BASE_DIR / 'db.sqlite3'),
         },
-    }
+    },
 }
-AUTH_USER_MODEL = "helpdesk_app.CustomUser"
 
-# POSTGRESQL
-# DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.postgresql',
-#             'NAME': 'djangochat',
-#             'USER': 'postgres',
-#             'PASSWORD': os.environ.get('DB_PASSWORD'),
-#             'HOST': 'localhost',  # Set to the appropriate host
-#             'PORT': '',          # Leave empty to use the default PostgreSQL port (5432)
-#         }
-#     }
+AUTH_USER_MODEL = "room.CustomUser"
+
+
 
 
 # Password validation
@@ -187,7 +153,7 @@ USE_I18N = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "djangochat/static"),

@@ -269,9 +269,7 @@
                             <div class="w-100">
                                 <div class="d-flex justify-content-between">
                                     <span class="contact-name">{{ room.name }}</span>
-                                    {% if room_unread_counts|get_item:room.id > 0 %}
-                                        <span class="badge badge-danger">{{ room_unread_counts|get_item:room.id }}</span>
-                                    {% endif %}
+                                   
                                 </div>
                             </div>
                         </div>

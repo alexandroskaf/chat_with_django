@@ -5,7 +5,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
 from django.core.files.base import ContentFile
 from django.conf import settings
-from helpdesk_app.models import Room, Message, CustomUser, RoomUser
+from .models import Room, Message, CustomUser, RoomUser
 from django.utils import timezone
 from datetime import datetime
 import pytz

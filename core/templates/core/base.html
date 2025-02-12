@@ -174,9 +174,11 @@
                     {% comment %} <a href="/rooms/">Συνομιλίες</a> {% endcomment %}
                     <a href="/rooms/rooms/create">Δημιουργία Νέας Συνομιλίας</a>
                     <a href="{% url 'rooms' %}">Συνομιλίες</a>
-                    <div class="auth-buttons">
-                        <a href="/logout/">Αποσύνδεση</a>
-                    </div>
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="button">Αποσύνδεση</button>
+                    </form>
+                    
                 {% else %}
                     <a href="/login/">Είσοδος</a>
                     <div class="auth-buttons">
